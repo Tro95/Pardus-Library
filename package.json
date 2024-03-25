@@ -2,7 +2,7 @@
   "name": "pardus-library",
   "version": "1.0.0",
   "description": "The Pardus Library is a script designed to add useful and easy ways to interact with the online game Pardus (https://pardus.at) within other scripts.",
-  "main": "pardus_library.js",
+  "main": "dist/pardus_library.js",
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
