@@ -22,6 +22,7 @@
     "type": "git",
     "url": "git+https://github.com/Tro95/Pardus-Library.git"
   },
+  "type": "module",
   "author": "",
   "license": "ISC",
   "bugs": {
