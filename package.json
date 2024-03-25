@@ -16,7 +16,7 @@
     "lint": "eslint src",
     "lint-fix": "eslint src --fix",
     "gen-docs": "./node_modules/.bin/jsdoc src --destination docs --recurse",
-    "build": "npx webpack-cli"
+    "build": "npx webpack-cli --config webpack.config.cjs"
   },
   "repository": {
     "type": "git",

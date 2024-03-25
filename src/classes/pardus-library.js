@@ -1,4 +1,4 @@
-import { Main, Logout } from './pages';
+import { Main, Logout } from './pages/index.js';
 
 export default class PardusLibrary {
 

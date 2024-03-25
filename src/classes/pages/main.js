@@ -1,5 +1,5 @@
-import AbstractPage from '../abstract/abstract-page';
-import NavArea from '../main/nav';
+import AbstractPage from '../abstract/abstract-page.js';
+import NavArea from '../main/nav.js';
 
 export default class Main extends AbstractPage {
     #navArea;

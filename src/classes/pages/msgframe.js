@@ -1,5 +1,5 @@
-import AbstractPage from '../abstract/abstract-page';
-import PardusLibrary from '../pardus-library';
+import AbstractPage from '../abstract/abstract-page.js';
+import PardusLibrary from '../pardus-library.js';
 
 class Msgframe {
     #centreTd;
