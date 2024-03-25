@@ -272,6 +272,10 @@ export default class Tile {
         this.#refreshHighlightStatus();
     }
 
+    clearHighlight() {
+        this.#clearAllHighlighting();
+    }
+
     #refreshHighlightStatus() {
         if (this.isVirtualTile()) {
             return false;

@@ -12,6 +12,8 @@ export default class PardusLibrary {
             case '/logout.php':
                 this.#currentPage = new Logout();
                 break;
+            default:
+                this.#currentPage = 'No page implemented!';
         }
     }
 

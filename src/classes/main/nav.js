@@ -8,6 +8,7 @@ export default class NavArea {
     #width;
     #grid = [];
     #centreTile;
+    #tileHighlights = new Map();
 
     constructor(options = {
         squad: false
@@ -32,7 +33,28 @@ export default class NavArea {
         return this.#centreTile;
     }
 
-    reload(clear = false) {
+    set tileHighlights(tiles_to_highlight) {
+        this.tileHighlights = tiles_to_highlight;
+        this.#refreshHighlightedTiles();
+    }
+
+    #clearHighlightedTiles() {
+        for (const tile of this.clickableTiles()) {
+            tile.clearHighlight();
+        }
+    }
+
+    #refreshHighlightedTiles() {
+        for (const tile of this.clickableTiles()) {
+            if (this.tileHighlights.has(tile.tile_id)) {
+                tile.highlight(this.tileHighlights.get(tile.tile_id));
+            } else {
+                tile.clearHighlight();
+            }
+        }        
+    }
+
+    reload() {
         this.#navElement = document.getElementById('navareatransition');
 
         if (!this.#navElement || this.#navElement.style.display === "none") {
@@ -204,11 +226,6 @@ export default class NavArea {
     * yieldPathFrom(id, ignore_navigatable = false) {
         const from_tile = this.getTile(id);
         yield* this.yieldPathBetween(from_tile, this.#centreTile, ignore_navigatable);
-    }
-
-    refreshTilesToHighlight(tiles_to_highlight) {
-        this.tiles_to_highlight = tiles_to_highlight;
-        this.reload(true);
     }
 
     getTile(id) {
