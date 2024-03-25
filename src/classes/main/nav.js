@@ -34,7 +34,7 @@ export default class NavArea {
     }
 
     set tileHighlights(tiles_to_highlight) {
-        this.tileHighlights = tiles_to_highlight;
+        this.#tileHighlights = tiles_to_highlight;
         this.#refreshHighlightedTiles();
     }
 
@@ -46,12 +46,12 @@ export default class NavArea {
 
     #refreshHighlightedTiles() {
         for (const tile of this.clickableTiles()) {
-            if (this.tileHighlights.has(tile.tile_id)) {
-                tile.highlight(this.tileHighlights.get(tile.tile_id));
+            if (this.#tileHighlights.has(tile.tile_id)) {
+                tile.highlight(this.#tileHighlights.get(tile.tile_id));
             } else {
                 tile.clearHighlight();
             }
-        }        
+        }
     }
 
     reload() {
