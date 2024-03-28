@@ -34,3 +34,9 @@ Sectors.getTileIdFromSectorAndCoords = function(sector, x, y) {
 
     return this.get(sector).getTileByCoords(x, y);
 }
+
+Sectors.getSectors = function * () {
+    for (const sector of this) {
+        yield sector[1];
+    }
+}
