@@ -13,6 +13,8 @@ Sectors.getSectorForTile = function(tile_id) {
             return sector;
         }
     }
+
+    throw new Error(`No sector found for tile id ${tile_id}`);
 }
 
 Sectors.getSectorAndCoordsForTile = function(tile_id) {
