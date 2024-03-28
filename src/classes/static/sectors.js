@@ -9,7 +9,7 @@ for (const sector of Object.keys(sectorMapDataObj)) {
 
 Sectors.getSectorForTile = function(tile_id) { 
     for (const sector of this.getSectors()) {
-        if (sector.has(tile_id)) {
+        if (sector.contains(tile_id)) {
             return sector;
         }
     }
