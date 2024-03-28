@@ -34,6 +34,12 @@ export default class Sector {
         }
     }
 
+    getTileHumanString(tile_id) {
+        const sectorObj = this.getTile(tile_id);
+
+        return `${sectorObj.sector} [${sectorObj.x}, ${sectorObj.y}]`;
+    }
+
     getTileByCoords(x, y) {
         if (Number(x) < 0 || Number(y) < 0 || Number(x) >= this.#columns || Number(y) >= this.#rows) {
             return -1;

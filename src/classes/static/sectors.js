@@ -15,6 +15,10 @@ Sectors.getSectorForTile = function(tile_id) {
     }
 }
 
+Sectors.getSectorAndCoordsForTile = function(tile_id) {
+    return this.getSectorForTile(tile_id).getTileHumanString(tile_id);
+}
+
 Sectors.getTileIdFromSectorAndCoords = function(sector, x, y) {
     if (sector.endsWith('NE')) {
         sector = sector.substring(0, sector.length - 3);
