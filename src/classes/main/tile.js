@@ -160,10 +160,6 @@ export default class Tile {
         return `Tile ${this.#tile_id} [${this.x}, ${this.y}]`;
     }
 
-    getHumanString() {
-        return get_sector_coords(this.id);
-    }
-
     valueOf() {
         return Number(this.#tile_id);
     }

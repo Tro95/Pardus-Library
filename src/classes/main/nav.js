@@ -1,4 +1,5 @@
 import Tile from './tile.js';
+import { get_sector_coords_obj, getSectorForTile } from '../static/sectors.js';
 
 export default class NavArea {
 
@@ -166,7 +167,7 @@ export default class NavArea {
 
     getTileOrVirtual(x, y, reference) {
         if (x >= this.#grid[0].length || x < 0 || y < 0 || y >= this.#grid.length) {
-            const sector_obj = get_sector_coords_obj(reference.id);
+            const sector_obj = getSectorForTile(reference.id);
             return new Tile(null, x, y, Number(reference.id) + (x - reference.x) + ((y - reference.y) * sector_obj.cols), true);
         }
 
