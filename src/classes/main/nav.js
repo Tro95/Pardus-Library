@@ -46,8 +46,8 @@ export default class NavArea {
 
     #refreshHighlightedTiles() {
         for (const tile of this.clickableTiles()) {
-            if (this.#tileHighlights.has(tile.tile_id)) {
-                tile.highlight(this.#tileHighlights.get(tile.tile_id));
+            if (this.#tileHighlights.has(tile.id)) {
+                tile.highlight(this.#tileHighlights.get(tile.id));
             } else {
                 tile.clearHighlight();
             }
