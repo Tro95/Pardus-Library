@@ -4,7 +4,7 @@ import { sectorMapDataObj } from '../../data/sectors.js';
 export const sectors = new Map();
 
 for (const sector of Object.keys(sectorMapDataObj)) {
-    sectors.add(sector, new Sector(sector, sectorMapDataObj[sector].start, sectorMapDataObj[sector].cols, sectorMapDataObj[sector].rows));
+    sectors.set(sector, new Sector(sector, sectorMapDataObj[sector].start, sectorMapDataObj[sector].cols, sectorMapDataObj[sector].rows));
 }
 
 export function getSectorForTile(tile_id) {
