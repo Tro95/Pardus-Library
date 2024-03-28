@@ -1,3 +1,5 @@
+import Tile from '../main/tile.js';
+
 export default class Sector {
 
     #id_start = 0;
