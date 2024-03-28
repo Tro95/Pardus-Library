@@ -298,6 +298,8 @@ export default class Tile {
             return false;
         }
 
+        this.highlights = [];
+
         if (this.background_image) {
             this.element.style.backgroundImage = this.background_image;
         } else {
