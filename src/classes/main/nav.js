@@ -26,7 +26,7 @@ export default class NavArea {
      * @param {function} func Function to call after the element is refreshed
      */
     addAfterRefreshHook(func) {
-        this.afterRefreshHooks.push(func);
+        this.#afterRefreshHooks.push(func);
     }
 
     /**
@@ -35,7 +35,7 @@ export default class NavArea {
      * @param {function} func Function to call after the element is refreshed
      */
     addBeforeRefreshHook(func) {
-        this.beforeRefreshHooks.push(func);
+        this.#beforeRefreshHooks.push(func);
     }
 
     /**

@@ -10,7 +10,7 @@ export default class Main extends AbstractPage {
         this.#navArea = new NavArea();
 
         this.#handlePartialRefresh(() => {
-            this.#navArea.reload();
+            this.#navArea.refresh();
         });
     }
 
