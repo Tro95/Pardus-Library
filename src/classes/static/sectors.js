@@ -1,16 +1,36 @@
 import Sector from '../pardus/sector.js';
 import { sectorMapDataObj } from '../../data/sectors.js';
 
-export const sectors = new Map();
+export const Sectors = new Map();
 
 for (const sector of Object.keys(sectorMapDataObj)) {
-    sectors.set(sector, new Sector(sector, sectorMapDataObj[sector].start, sectorMapDataObj[sector].cols, sectorMapDataObj[sector].rows));
+    Sectors.set(sector, new Sector(sector, sectorMapDataObj[sector].start, sectorMapDataObj[sector].cols, sectorMapDataObj[sector].rows));
 }
 
-export function getSectorForTile(tile_id) {
-    for (const sector of sectors) {
+Sectors.getSectorForTile = function(tile_id) { 
+    for (const sector of this) {
         if (sector.has(tile_id)) {
-            return sector.get(tile_id);
+            return sector;
         }
     }
+}
+
+Sectors.getTileIdFromSectorAndCoords = function(sector, x, y) {
+    if (sector.endsWith('NE')) {
+        sector = sector.substring(0, sector.length - 3);
+    }
+
+    if (sector.endsWith('East') || sector.endsWith('West')) {
+        sector = sector.substring(0, sector.length - 5);
+    }
+
+    if (sector.endsWith('North') || sector.endsWith('South') || sector.endsWith('Inner')) {
+        sector = sector.substring(0, sector.length - 6);
+    }
+
+    if (!this.has(sector)) {
+        throw `No data for sector '${sector}'!`;
+    }
+
+    return this.get(sector).getTileByCoords(x, y);
 }

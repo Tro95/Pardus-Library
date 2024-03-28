@@ -50,6 +50,7 @@ __webpack_require__.r(__webpack_exports__);
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
   PardusLibrary: () => (/* reexport */ PardusLibrary),
+  Sectors: () => (/* reexport */ Sectors),
   Tile: () => (/* reexport */ Tile)
 });
 
@@ -473,10 +474,18 @@ class Sector {
             'colums': this.#columns
         }
     }
+
+    getTileByCoords(x, y) {
+        if (Number(x) < 0 || Number(y) < 0 || Number(x) >= this.#columns || Number(y) >= this.#rows) {
+            return -1;
+        }
+
+        return Number(this.#id_start) + Number(x) * Number(this.#rows) + Number(y);
+    }
 }
 
 ;// CONCATENATED MODULE: ./src/data/sectors.js
-const sectors_sectorMapDataObj = {
+const sectorMapDataObj = {
     "Aandti" : { "start": 78435, "cols": 22, "rows": 13 },
     "AB 5-848" : { "start": 375000, "cols": 18, "rows": 14 },
     "Abeho" : { "start": 325645, "cols": 25, "rows": 13 },
@@ -883,41 +892,21 @@ const sectors_sectorMapDataObj = {
 
 
 
-const sectors = new Map();
+const Sectors = new Map();
 
-for (const sector of Object.keys(sectors_sectorMapDataObj)) {
-    sectors.add(sector, new Sector(sector, sectors_sectorMapDataObj[sector].start, sectors_sectorMapDataObj[sector].cols, sectors_sectorMapDataObj[sector].rows));
+for (const sector of Object.keys(sectorMapDataObj)) {
+    Sectors.set(sector, new Sector(sector, sectorMapDataObj[sector].start, sectorMapDataObj[sector].cols, sectorMapDataObj[sector].rows));
 }
 
-function getSectorForTile(tile_id) {
-    for (const sector of sectors) {
+Sectors.getSectorForTile = function(tile_id) { 
+    for (const sector of this) {
         if (sector.has(tile_id)) {
-            return sector.get(tile_id);
+            return sector;
         }
     }
 }
 
-
-
-function get_sector_coords_obj(tile_id) {
-    for (const index in sectorMapDataObj) {
-        const sector = sectorMapDataObj[index];
-        if (tile_id >= sector.start && tile_id < sector.start + (sector.cols * sector.rows)) {
-            return {
-                'sector': index,
-                'x': Math.floor((tile_id - sector.start) / sector.rows),
-                'y': (tile_id - sector.start) % sector.rows,
-                'tile_id': tile_id,
-                'rows': sector.rows,
-                'cols': sector.cols
-            }
-        }
-    }
-}
-
-/* return the tile id given the current sector name and coordinates */
-function getTileIdFromSectorAndCoords(sector, x, y) {
-
+Sectors.getTileIdFromSectorAndCoords = function(sector, x, y) {
     if (sector.endsWith('NE')) {
         sector = sector.substring(0, sector.length - 3);
     }
@@ -930,20 +919,12 @@ function getTileIdFromSectorAndCoords(sector, x, y) {
         sector = sector.substring(0, sector.length - 6);
     }
 
-    if (!sectorMapDataObj[sector]) {
+    if (!this.has(sector)) {
         throw `No data for sector '${sector}'!`;
     }
 
-    let sectorData = sectorMapDataObj[sector];
-    
-    if (Number(x) < 0 || Number(y) < 0 || Number(x) >= sectorData.cols || Number(y) >= sectorData.rows) {
-        return -1;
-    }
-
-    return Number(sectorData.start) + Number(x) * Number(sectorData.rows) + Number(y);
+    return this.get(sector).getTileByCoords(x, y);
 }
-
-
 
 ;// CONCATENATED MODULE: ./src/classes/main/nav.js
 
@@ -1115,7 +1096,7 @@ class NavArea {
 
     getTileOrVirtual(x, y, reference) {
         if (x >= this.#grid[0].length || x < 0 || y < 0 || y >= this.#grid.length) {
-            const sector_obj = getSectorForTile(reference.id);
+            const sector_obj = Sectors.getSectorForTile(reference.id);
             return new Tile(null, x, y, Number(reference.id) + (x - reference.x) + ((y - reference.y) * sector_obj.cols), true);
         }
 
@@ -1439,6 +1420,7 @@ class PardusLibrary {
     }
 }
 ;// CONCATENATED MODULE: ./src/index.js
+
 
 
 /******/ 	return __webpack_exports__;

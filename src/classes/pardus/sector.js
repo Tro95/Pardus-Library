@@ -33,4 +33,12 @@ export default class Sector {
             'colums': this.#columns
         }
     }
+
+    getTileByCoords(x, y) {
+        if (Number(x) < 0 || Number(y) < 0 || Number(x) >= this.#columns || Number(y) >= this.#rows) {
+            return -1;
+        }
+
+        return Number(this.#id_start) + Number(x) * Number(this.#rows) + Number(y);
+    }
 }
