@@ -10,11 +10,53 @@ export default class NavArea {
     #centreTile;
     #tileHighlights = new Map();
 
+    #afterRefreshHooks = [];
+    #beforeRefreshHooks = [];
+
     constructor(options = {
         squad: false
     }) {
         this.#squad = options.squad;
-        this.reload();
+        this.refresh();
+    }
+
+    /**
+     * Add a hook to run after the element is refreshed
+     * @function HtmlElement#addAfterRefreshElement
+     * @param {function} func Function to call after the element is refreshed
+     */
+    addAfterRefreshHook(func) {
+        this.afterRefreshHooks.push(func);
+    }
+
+    /**
+     * Add a hook to run after the element is refreshed
+     * @function HtmlElement#addAfterRefreshElement
+     * @param {function} func Function to call after the element is refreshed
+     */
+    addBeforeRefreshHook(func) {
+        this.beforeRefreshHooks.push(func);
+    }
+
+    /**
+     * Run all hooks that should be called prior to refreshing the element
+     * @function Nav#beforeRefresh
+     */
+    #beforeRefresh() {
+        for (const func of this.#beforeRefreshHooks) {
+            func();
+        }
+    }
+
+    /**
+     * Run all hooks that should be called after refreshing the element
+     * @function Nav#afterRefresh
+     * @param {object} opts Optional arguments to be passed to the hooks
+     */
+    #afterRefresh(opts = {}) {
+        for (const func of this.#afterRefreshHooks) {
+            func(opts);
+        }
     }
 
     get height() {
@@ -54,7 +96,14 @@ export default class NavArea {
         }
     }
 
-    reload() {
+    refresh() {
+        this.#beforeRefresh();
+        this.#reload();
+        this.#refreshHighlightedTiles();
+        this.#afterRefresh();
+    }
+
+    #reload() {
         this.#navElement = document.getElementById('navareatransition');
 
         if (!this.#navElement || this.#navElement.style.display === "none") {
