@@ -34,6 +34,10 @@ export default class Sector {
         }
     }
 
+    getVirtualTile(x, y, reference) {
+        return new Tile(null, x, y, Number(reference.id) + (x - reference.x) + ((y - reference.y) * this.#columns), true);
+    }
+
     getTileHumanString(tile_id) {
         const sectorObj = this.getTile(tile_id);
 
