@@ -167,7 +167,7 @@ export default class NavArea {
 
     getTileOrVirtual(x, y, reference) {
         if (x >= this.#grid[0].length || x < 0 || y < 0 || y >= this.#grid.length) {
-            Sectors.getSectorForTile(reference.id).getVirtualTile(x, y, reference);
+            return Sectors.getSectorForTile(reference.id).getVirtualTile(x, y, reference);
         }
 
         return this.#grid[y][x];
