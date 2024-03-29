@@ -53,7 +53,6 @@ export default class Tile {
     constructor(element, x, y, tile_id = null, virtual_tile = false) {
         this.#x = x;
         this.#y = y;
-        this.highlight_string = '';
         this.emphasised = false;
         this.path_highlighted = false;
         this.#virtual_tile = virtual_tile;
@@ -193,7 +192,7 @@ export default class Tile {
     }
 
     isHighlighted() {
-        if (this.highlights.size > 0) {
+        if (this.#highlights.size > 0) {
             return true;
         }
 
@@ -267,7 +266,7 @@ export default class Tile {
             return false;
         }
 
-        this.highlights = [];
+        this.#highlights.clear();
 
         if (this.background_image) {
             this.element.style.backgroundImage = this.background_image;
