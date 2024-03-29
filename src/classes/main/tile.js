@@ -206,11 +206,23 @@ export default class Tile {
         }
     }
 
-    highlight(highlight_colour = 'g') {
+    highlight(highlight_colours = []) {
         if (this.isVirtualTile()) {
             return false;
         }
 
+        if (Array.isArray(highlight_colour)) {
+            for (const colour of highlight_colours) {
+                this.#highlightSingleColour(colour);
+            }
+        } else {
+            this.#highlightSingleColour(highlight_colours);
+        }
+
+        this.#refreshHighlightStatus();
+    }
+
+    #highlightSingleColour(highlight_colour = 'g') {
         for (const colour in this.constructor.colours) {
             if (this.constructor.colours[colour].short_code === highlight_colour) {
                 this.highlights.push({
@@ -220,9 +232,7 @@ export default class Tile {
                 });
                 break;
             }
-        }
-
-        this.#refreshHighlightStatus();
+        }        
     }
 
     isEmphasised() {

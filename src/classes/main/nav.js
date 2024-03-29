@@ -81,6 +81,18 @@ export default class NavArea {
         this.#refreshHighlightedTiles();
     }
 
+    highlightTiles(tiles_to_highlight) {
+        tiles_to_highlight.forEach((key, value) => {
+            if (this.#tileHighlights.has(key)) {
+                const current_value = this.#tileHighlights.get(key);
+                const new_value = [].concat(current_value).concat(value);
+                this.#tileHighlights.set(key, new_value);
+            } else {
+                this.#tileHighlights.set(key, value);
+            }
+        });
+    }
+
     #clearHighlightedTiles() {
         for (const tile of this.clickableTiles()) {
             tile.clearHighlight();
