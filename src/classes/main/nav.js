@@ -76,7 +76,7 @@ export default class NavArea {
         return this.#centreTile;
     }
 
-    highlightTiles(tiles_to_highlight) {
+    addTilesHighlights(tiles_to_highlight) {
         tiles_to_highlight.forEach((value, key) => {
             if (this.#tileHighlights.has(key)) {
                 const current_value = this.#tileHighlights.get(key);
@@ -84,6 +84,20 @@ export default class NavArea {
                 this.#tileHighlights.set(key, new_value);
             } else {
                 this.#tileHighlights.set(key, value);
+            }
+        });
+
+        this.#refreshHighlightedTiles();
+    }
+
+    addTilesHighlight(tiles_to_highlight) {
+        tiles_to_highlight.forEach((value, key) => {
+            if (this.#tileHighlights.has(key)) {
+                const current_value = this.#tileHighlights.get(key);
+                const new_value = current_value.add(value);
+                this.#tileHighlights.set(key, new_value);
+            } else {
+                this.#tileHighlights.set(key, new Set(value));
             }
         });
 
