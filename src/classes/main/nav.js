@@ -82,7 +82,7 @@ export default class NavArea {
     }
 
     highlightTiles(tiles_to_highlight) {
-        tiles_to_highlight.forEach((key, value) => {
+        tiles_to_highlight.forEach((value, key) => {
             if (this.#tileHighlights.has(key)) {
                 const current_value = this.#tileHighlights.get(key);
                 const new_value = [].concat(current_value).concat(value);
