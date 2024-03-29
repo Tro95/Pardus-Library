@@ -211,7 +211,7 @@ export default class Tile {
             return false;
         }
 
-        if (Array.isArray(highlight_colour)) {
+        if (Array.isArray(highlight_colours)) {
             for (const colour of highlight_colours) {
                 this.#highlightSingleColour(colour);
             }
