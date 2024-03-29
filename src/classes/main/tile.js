@@ -3,6 +3,7 @@ export default class Tile {
     #y;
     #tile_id;
     #virtual_tile;
+    #highlights = new Set();
 
     static colours = {
         'Green': {
@@ -53,7 +54,6 @@ export default class Tile {
         this.#x = x;
         this.#y = y;
         this.highlight_string = '';
-        this.highlights = [];
         this.emphasised = false;
         this.path_highlighted = false;
         this.#virtual_tile = virtual_tile;
@@ -193,7 +193,7 @@ export default class Tile {
     }
 
     isHighlighted() {
-        if (this.highlights.length > 0) {
+        if (this.highlights.size > 0) {
             return true;
         }
 
@@ -206,33 +206,18 @@ export default class Tile {
         }
     }
 
-    highlight(highlight_colours = []) {
-        if (this.isVirtualTile()) {
-            return false;
-        }
-
-        if (Array.isArray(highlight_colours)) {
-            for (const colour of highlight_colours) {
-                this.#highlightSingleColour(colour);
-            }
-        } else {
-            this.#highlightSingleColour(highlight_colours);
-        }
-
+    addHighlight(highlight_colour) {
+        this.#highlights.add(highlight_colour);
         this.#refreshHighlightStatus();
     }
 
-    #highlightSingleColour(highlight_colour = 'g') {
-        for (const colour in this.constructor.colours) {
-            if (this.constructor.colours[colour].short_code === highlight_colour) {
-                this.highlights.push({
-                    red: this.constructor.colours[colour].red,
-                    green: this.constructor.colours[colour].green,
-                    blue: this.constructor.colours[colour].blue
-                });
-                break;
-            }
-        }        
+    addHighlights(highlights = new Set()) {
+        this.#highlights = this.#highlights.union(highlights);
+        this.#refreshHighlightStatus();
+    }
+
+    removeHighlight(highlight_colour) {
+        this.#highlights.delete(highlight_colour);
     }
 
     isEmphasised() {
@@ -246,35 +231,6 @@ export default class Tile {
 
     removeEmphasis() {
         this.emphasised = false;
-        this.#refreshHighlightStatus();
-    }
-
-    removeHighlight(highlight_colour = 'g') {
-        if (this.isVirtualTile()) {
-            return false;
-        }
-
-        const colour_to_remove = {
-            red: 0,
-            green: 0,
-            blue: 0
-        }
-
-        for (const colour in this.constructor.colours) {
-            if (this.constructor.colours[colour].short_code === highlight_colour) {
-                colour_to_remove.red = this.constructor.colours[colour].red;
-                colour_to_remove.green = this.constructor.colours[colour].green;
-                colour_to_remove.blue = this.constructor.colours[colour].blue;
-                break;
-            }
-        }
-
-        for (const index in this.highlights) {
-            if (this.highlights[index].red === colour_to_remove.red && this.highlights[index].green === colour_to_remove.green && this.highlights[index].blue === colour_to_remove.blue) {
-                this.highlights.splice(index, 1);
-            }
-        }
-
         this.#refreshHighlightStatus();
     }
 
@@ -320,6 +276,22 @@ export default class Tile {
         return true;
     }
 
+    #getHighlightsRGB() {
+        const highlights = [];
+
+        for (const colour in this.constructor.colours) {
+            if (this.#highlights.has(this.constructor.colours[colour].short_code)) {
+                highlights.push({
+                    red: this.constructor.colours[colour].red,
+                    green: this.constructor.colours[colour].green,
+                    blue: this.constructor.colours[colour].blue
+                });
+            }
+        }
+
+        return highlights
+    }
+
     #getHighlightedColourString() {
         if (this.isVirtualTile()) {
             return false;
@@ -334,7 +306,7 @@ export default class Tile {
         let number_green = 0;
         let number_blue = 0;
 
-        for (const colour of this.highlights) {
+        for (const colour of this.#getHighlightsRGB()) {
             total_red += colour.red;
             total_green += colour.green;
             total_blue += colour.blue;
