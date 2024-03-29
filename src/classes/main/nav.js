@@ -76,21 +76,18 @@ export default class NavArea {
         return this.#centreTile;
     }
 
-    set tileHighlights(tiles_to_highlight) {
-        this.#tileHighlights = tiles_to_highlight;
-        this.#refreshHighlightedTiles();
-    }
-
     highlightTiles(tiles_to_highlight) {
         tiles_to_highlight.forEach((value, key) => {
             if (this.#tileHighlights.has(key)) {
                 const current_value = this.#tileHighlights.get(key);
-                const new_value = [].concat(current_value).concat(value);
+                const new_value = current_value.union(value);
                 this.#tileHighlights.set(key, new_value);
             } else {
                 this.#tileHighlights.set(key, value);
             }
         });
+
+        this.#refreshHighlightedTiles();
     }
 
     #clearHighlightedTiles() {
@@ -102,7 +99,7 @@ export default class NavArea {
     #refreshHighlightedTiles() {
         for (const tile of this.clickableTiles()) {
             if (this.#tileHighlights.has(tile.id)) {
-                tile.highlight(this.#tileHighlights.get(tile.id));
+                tile.addHighlights(this.#tileHighlights.get(tile.id));
             } else {
                 tile.clearHighlight();
             }
