@@ -212,7 +212,10 @@ export default class Tile {
     }
 
     addHighlights(highlights = new Set()) {
-        this.#highlights = this.#highlights.union(highlights);
+        highlights.forEach((value) => {
+            this.#highlights.add(value);
+        });
+
         this.#refreshHighlightStatus();
     }
 
