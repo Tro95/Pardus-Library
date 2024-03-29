@@ -246,7 +246,7 @@ export default class Tile {
             return false;
         }
 
-        if (this.highlights.length === 0) {
+        if (this.#highlights.size === 0) {
             return this.#clearAllHighlighting();
         }
 
