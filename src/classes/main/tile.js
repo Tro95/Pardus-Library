@@ -220,6 +220,7 @@ export default class Tile {
 
     removeHighlight(highlight_colour) {
         this.#highlights.delete(highlight_colour);
+        this.#refreshHighlightStatus();
     }
 
     isEmphasised() {
