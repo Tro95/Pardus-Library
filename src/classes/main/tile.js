@@ -279,20 +279,18 @@ export default class Tile {
         return true;
     }
 
-    #getHighlightsRGB() {
+    * #yieldHighlightsRGB() {
         const highlights = [];
 
         for (const colour in this.constructor.colours) {
             if (this.#highlights.has(this.constructor.colours[colour].short_code)) {
-                highlights.push({
+                yield {
                     red: this.constructor.colours[colour].red,
                     green: this.constructor.colours[colour].green,
                     blue: this.constructor.colours[colour].blue
-                });
+                };
             }
         }
-
-        return highlights
     }
 
     #getHighlightedColourString() {
@@ -309,22 +307,14 @@ export default class Tile {
         let number_green = 0;
         let number_blue = 0;
 
-        for (const colour of this.#getHighlightsRGB()) {
+        for (const colour of this.#yieldHighlightsRGB()) {
             total_red += colour.red;
             total_green += colour.green;
             total_blue += colour.blue;
 
-            if (colour.red > 0) {
-                number_red += 1;
-            }
-
-            if (colour.green > 0) {
-                number_green += 1;
-            }
-
-            if (colour.blue > 0) {
-                number_blue += 1;
-            }
+            number_red += 1;
+            number_green += 1;
+            number_blue += 1;
         }
 
         if (number_red === 0) {
