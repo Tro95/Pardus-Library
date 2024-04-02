@@ -9,7 +9,6 @@ export default class NavArea {
     #width;
     #grid = [];
     #centreTile;
-    #tileHighlights = new Map();
 
     #afterRefreshHooks = [];
     #beforeRefreshHooks = [];
@@ -92,40 +91,15 @@ export default class NavArea {
         }
     }
 
-    // addTilesHighlight(tiles_to_highlight) {
-    //     tiles_to_highlight.forEach((value, key) => {
-    //         if (this.#tileHighlights.has(key)) {
-    //             const current_value = this.#tileHighlights.get(key);
-    //             const new_value = current_value.add(value);
-    //             this.#tileHighlights.set(key, new_value);
-    //         } else {
-    //             this.#tileHighlights.set(key, new Set(value));
-    //         }
-    //     });
-
-    //     this.#refreshHighlightedTiles();
-    // }
-
-    #clearHighlightedTiles() {
+    clearTilesHighlights() {
         for (const tile of this.clickableTiles()) {
             tile.clearHighlight();
-        }
-    }
-
-    #refreshHighlightedTiles() {
-        for (const tile of this.clickableTiles()) {
-            if (this.#tileHighlights.has(tile.id)) {
-                tile.addHighlights(this.#tileHighlights.get(tile.id));
-            } else {
-                tile.clearHighlight();
-            }
-        }
+        }        
     }
 
     refresh() {
         this.#beforeRefresh();
         this.#reload();
-        // this.#refreshHighlightedTiles();
         this.#afterRefresh();
     }
 
