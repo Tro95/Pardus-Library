@@ -5,50 +5,50 @@ export default class Tile {
     #virtual_tile;
     #highlights = new Set();
 
-    static colours = {
-        'Green': {
+    static colours = new Map([
+        ['Green', {
             'red': 0,
             'green': 128,
             'blue': 0,
             'short_code': 'g'
-        },
-        'Blue': {
+        }],
+        ['Blue', {
             'red': 0,
             'green': 0,
             'blue': 128,
             'short_code': 'b',
-        },
-        'Red': {
+        }],
+        ['Red', {
             'red': 128,
             'green': 0,
             'blue': 0,
             'short_code': 'r'
-        },
-        'Yellow': {
+        }],
+        ['Yellow', {
             'red': 128,
             'green': 128,
             'blue': 0,
             'short_code': 'y'
-        },
-        'Cyan': {
+        }],
+        ['Cyan', {
             'red': 0,
             'green': 128,
             'blue': 128,
             'short_code': 'c'
-        },
-        'Magenta': {
+        }],
+        ['Magenta', {
             'red': 128,
             'green': 0,
             'blue': 128,
             'short_code': 'm'
-        },
-        'Silver': {
+        }],
+        ['Silver', {
             'red': 128,
             'green': 128,
             'blue': 128,
             'short_code': 's'
-        }
-    };
+        }],
+    ]);
 
     constructor(element, x, y, tile_id = null, virtual_tile = false) {
         this.#x = x;
@@ -282,12 +282,12 @@ export default class Tile {
     * #yieldHighlightsRGB() {
         const highlights = [];
 
-        for (const colour in this.constructor.colours) {
-            if (this.#highlights.has(this.constructor.colours[colour].short_code)) {
+        for (const colour of this.constructor.colours.values()) {
+            if (this.#highlights.has(colour.short_code)) {
                 yield {
-                    red: this.constructor.colours[colour].red,
-                    green: this.constructor.colours[colour].green,
-                    blue: this.constructor.colours[colour].blue
+                    red: colour.red,
+                    green: colour.green,
+                    blue: colour.blue
                 };
             }
         }
