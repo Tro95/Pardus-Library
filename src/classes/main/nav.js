@@ -77,32 +77,34 @@ export default class NavArea {
     }
 
     addTilesHighlights(tiles_to_highlight) {
-        tiles_to_highlight.forEach((value, key) => {
-            if (this.#tileHighlights.has(key)) {
-                const current_value = this.#tileHighlights.get(key);
-                const new_value = current_value.union(value);
-                this.#tileHighlights.set(key, new_value);
-            } else {
-                this.#tileHighlights.set(key, value);
+        for (const tile of this.clickableTiles()) {
+            if (tiles_to_highlight.has(tile.id)) {
+                tile.addHighlights(tiles_to_highlight.get(tile.id));
             }
-        });
-
-        this.#refreshHighlightedTiles();
+        }
     }
 
     addTilesHighlight(tiles_to_highlight) {
-        tiles_to_highlight.forEach((value, key) => {
-            if (this.#tileHighlights.has(key)) {
-                const current_value = this.#tileHighlights.get(key);
-                const new_value = current_value.add(value);
-                this.#tileHighlights.set(key, new_value);
-            } else {
-                this.#tileHighlights.set(key, new Set(value));
+        for (const tile of this.clickableTiles()) {
+            if (tiles_to_highlight.has(tile.id)) {
+                tile.addHighlight(tiles_to_highlight.get(tile.id));
             }
-        });
-
-        this.#refreshHighlightedTiles();
+        }
     }
+
+    // addTilesHighlight(tiles_to_highlight) {
+    //     tiles_to_highlight.forEach((value, key) => {
+    //         if (this.#tileHighlights.has(key)) {
+    //             const current_value = this.#tileHighlights.get(key);
+    //             const new_value = current_value.add(value);
+    //             this.#tileHighlights.set(key, new_value);
+    //         } else {
+    //             this.#tileHighlights.set(key, new Set(value));
+    //         }
+    //     });
+
+    //     this.#refreshHighlightedTiles();
+    // }
 
     #clearHighlightedTiles() {
         for (const tile of this.clickableTiles()) {
@@ -123,7 +125,7 @@ export default class NavArea {
     refresh() {
         this.#beforeRefresh();
         this.#reload();
-        this.#refreshHighlightedTiles();
+        // this.#refreshHighlightedTiles();
         this.#afterRefresh();
     }
 
