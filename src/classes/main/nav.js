@@ -195,6 +195,7 @@ export default class NavArea {
             }
 
             if (direction_x == 0 && direction_y == 0) {
+                // We should never end up here, as it implies the two co-ords have the same x and y
                 break;
             }
 
