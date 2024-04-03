@@ -94,7 +94,7 @@ export default class NavArea {
     clearTilesHighlights() {
         for (const tile of this.clickableTiles()) {
             tile.clearHighlight();
-        }        
+        }
     }
 
     refresh() {
