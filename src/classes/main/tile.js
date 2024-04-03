@@ -4,6 +4,7 @@ export default class Tile {
     #tile_id;
     #virtual_tile;
     #highlights = new Set();
+    #listenerNonce = new Set();
 
     static colours = new Map([
         ['Green', {
@@ -199,9 +200,19 @@ export default class Tile {
         return false;
     }
 
-    addEventListener(event, func) {
+    addEventListener(event, func, options = {}) {
+        if (options.hasOwnProperty('nonce')) {
+            if (this.#listenerNonce.has(options.nonce)) {
+                return;
+            }
+        }
+
         if (this.isNavigatable()) {
-            this.element.children[0].addEventListener(event, func);
+            this.element.children[0].addEventListener(event, func, options);
+
+            if (options.hasOwnProperty('nonce')) {
+                this.#listenerNonce.add(options.nonce);
+            }
         }
     }
 
