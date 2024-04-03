@@ -20,7 +20,7 @@ export default class Main extends AbstractPage {
 
     #handlePartialRefresh(func) {
         const mainElement = document.getElementById('tdSpaceChart');
-        const navElement = mainElement ? document.getElementById('tdSpaceChart').getElementsByTagName('table')[0] : document.querySelectorAll('table td[valign="top"]')[1];
+        const navElement = mainElement ? document.getElementById('tdSpaceChart').getElementsByTagName('table')[0].rows[1] : document.querySelectorAll('table td[valign="top"]')[1];
 
         // This would be more specific, but it doesn't trigger enough refreshes
         //const navElement = document.getElementById('nav').parentNode;
