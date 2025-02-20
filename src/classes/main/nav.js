@@ -97,6 +97,11 @@ export default class NavArea {
         }
     }
 
+    refreshTilesToHighlight(tiles_to_highlight) {
+        this.tiles_to_highlight = tiles_to_highlight;
+        this.reload(true);
+    }
+
     refresh() {
         this.#beforeRefresh();
         this.#reload();
