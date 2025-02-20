@@ -82,9 +82,10 @@ export default class Tile {
             // Get the tile id
             if (this.element.classList.contains('navShip') && this.element.querySelector('#thisShip')) {
                 this.#tile_id = this.getUserloc();
-            } else if (this.element.children.length > 0 && this.element.children[0].tagName === 'A') {
+            } else if (this.element.children.length > 0 && this.element.querySelector('A')) {
 
-                const child_element = this.element.children[0];
+                // In order to support blue stims, we have to use querySelector to handle the extra <div>
+                const child_element = this.element.querySelector('A');
 
                 // Can we navigate to the tile?
                 if ((!child_element.hasAttribute('onclick') || child_element.getAttribute('onclick').startsWith('warp')) && (!child_element.hasAttribute('_onclick') || child_element.getAttribute('_onclick').startsWith('warp'))) {
