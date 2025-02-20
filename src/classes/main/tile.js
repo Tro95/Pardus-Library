@@ -178,11 +178,11 @@ export default class Tile {
     }
 
     isNavigatable() {
-        if (!this.isVirtualTile() && this.element && this.element.children.length > 0 && this.element.children[0].getAttribute('onclick') && this.element.children[0].getAttribute('onclick').startsWith('nav') && this.isClickable()) {
+        if (!this.isVirtualTile() && this.element && this.element.children.length > 0 && this.element.querySelector('A')?.getAttribute('onclick') && this.element.querySelector('A')?.getAttribute('onclick').startsWith('nav') && this.isClickable()) {
             return true;
         }
 
-        if (!this.isVirtualTile() && this.element && this.element.children.length > 0 && this.element.children[0].getAttribute('_onclick') && this.element.children[0].getAttribute('_onclick').startsWith('nav') && this.isClickable()) {
+        if (!this.isVirtualTile() && this.element && this.element.children.length > 0 && this.element.querySelector('A')?.getAttribute('_onclick') && this.element.querySelector('A')?.getAttribute('_onclick').startsWith('nav') && this.isClickable()) {
             return true;
         }
 
@@ -209,7 +209,7 @@ export default class Tile {
         }
 
         if (this.isNavigatable()) {
-            this.element.children[0].addEventListener(event, func, options);
+            this.element.querySelector('A').addEventListener(event, func, options);
 
             if (options.hasOwnProperty('nonce')) {
                 this.#listenerNonce.add(options.nonce);
