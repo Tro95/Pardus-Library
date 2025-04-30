@@ -2,35 +2,35 @@ import Tile from '../main/tile.js';
 
 export default class Sector {
 
-    #id_start = 0;
+    #idStart = 0;
     #columns = 0;
     #rows = 0;
 
     constructor(name, start, columns, rows) {
         this.name = name;
-        this.#id_start = start;
+        this.#idStart = start;
         this.#columns = columns;
         this.#rows = rows;
     }
 
-    contains(tile_id) {
-        if (tile_id >= this.#id_start && tile_id < this.#id_start + (this.#columns * this.#rows)) {
+    contains(tileId) {
+        if (tileId >= this.#idStart && tileId < this.#idStart + (this.#columns * this.#rows)) {
             return true;
         }
 
         return false;
     }
 
-    getTile(tile_id) {
-        if (!this.contains(tile_id)) {
+    getTile(tileId) {
+        if (!this.contains(tileId)) {
             return null;
         }
 
         return {
             'sector': this.name,
-            'x': Math.floor((tile_id - this.#id_start) / this.#rows),
-            'y': (tile_id - this.#id_start) % this.#rows,
-            'tile_id': tile_id,
+            'x': Math.floor((tileId - this.#idStart) / this.#rows),
+            'y': (tileId - this.#idStart) % this.#rows,
+            'tile_id': tileId,
             'rows': this.#rows,
             'colums': this.#columns
         }
@@ -40,8 +40,8 @@ export default class Sector {
         return new Tile(null, x, y, Number(reference.id) + (x - reference.x) + ((y - reference.y) * this.#columns), true);
     }
 
-    getTileHumanString(tile_id) {
-        const sectorObj = this.getTile(tile_id);
+    getTileHumanString(tileId) {
+        const sectorObj = this.getTile(tileId);
 
         return `${sectorObj.sector} [${sectorObj.x}, ${sectorObj.y}]`;
     }
@@ -51,6 +51,6 @@ export default class Sector {
             return -1;
         }
 
-        return Number(this.#id_start) + Number(x) * Number(this.#rows) + Number(y);
+        return Number(this.#idStart) + Number(x) * Number(this.#rows) + Number(y);
     }
 }
