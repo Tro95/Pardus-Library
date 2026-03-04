@@ -1,3 +1,4 @@
 export { default as PardusLibrary } from './classes/pardus-library.js';
 export { default as Tile } from './classes/main/tile.js';
-export { Sectors } from './classes/static/sectors.js';
+export { default as Sectors } from './classes/static/sectors.js';
+export { Msgframe } from './classes/pages/index.js';

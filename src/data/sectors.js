@@ -1,4 +1,4 @@
-export const sectorMapDataObj = {
+export const sectors = {
     "Aandti" : { "start": 78435, "cols": 22, "rows": 13 },
     "AB 5-848" : { "start": 375000, "cols": 18, "rows": 14 },
     "Abeho" : { "start": 325645, "cols": 25, "rows": 13 },

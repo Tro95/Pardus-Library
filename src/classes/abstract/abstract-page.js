@@ -3,7 +3,7 @@ export default class AbstractPage {
 
     constructor(pageName = '') {
         if (pageName === '') {
-            throw "Page is not defined for class";
+            throw new Error('Page is not defined for class');
         }
 
         this.#page = pageName;

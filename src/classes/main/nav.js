@@ -1,62 +1,21 @@
+import Refreshable from '../abstract/refreshable.js';
 import Tile from './tile.js';
-import { Sectors } from '../static/sectors.js';
+import Sectors from '../static/sectors.js';
 
-export default class NavArea {
-
-    #squad = false;
+export default class NavArea extends Refreshable {
+    #squad;
     #navElement;
     #height;
     #width;
     #grid = [];
     #centreTile;
 
-    #afterRefreshHooks = [];
-    #beforeRefreshHooks = [];
-
     constructor(options = {
-        squad: false
+        squad: false,
     }) {
+        super();
         this.#squad = options.squad;
         this.refresh();
-    }
-
-    /**
-     * Add a hook to run after the element is refreshed
-     * @function HtmlElement#addAfterRefreshElement
-     * @param {function} func Function to call after the element is refreshed
-     */
-    addAfterRefreshHook(func) {
-        this.#afterRefreshHooks.push(func);
-    }
-
-    /**
-     * Add a hook to run after the element is refreshed
-     * @function HtmlElement#addAfterRefreshElement
-     * @param {function} func Function to call after the element is refreshed
-     */
-    addBeforeRefreshHook(func) {
-        this.#beforeRefreshHooks.push(func);
-    }
-
-    /**
-     * Run all hooks that should be called prior to refreshing the element
-     * @function Nav#beforeRefresh
-     */
-    #beforeRefresh() {
-        for (const func of this.#beforeRefreshHooks) {
-            func();
-        }
-    }
-
-    /**
-     * Run all hooks that should be called after refreshing the element
-     * @function Nav#afterRefresh
-     * @param {object} opts Optional arguments to be passed to the hooks
-     */
-    #afterRefresh(opts = {}) {
-        for (const func of this.#afterRefreshHooks) {
-            func(opts);
-        }
     }
 
     get height() {
@@ -75,18 +34,18 @@ export default class NavArea {
         return this.#centreTile;
     }
 
-    addTilesHighlights(tiles_to_highlight) {
+    addTilesHighlights(tilesToHighlight) {
         for (const tile of this.clickableTiles()) {
-            if (tiles_to_highlight.has(tile.id)) {
-                tile.addHighlights(tiles_to_highlight.get(tile.id));
+            if (tilesToHighlight.has(tile.id)) {
+                tile.addHighlights(tilesToHighlight.get(tile.id));
             }
         }
     }
 
-    addTilesHighlight(tiles_to_highlight) {
+    addTilesHighlight(tilesToHighlight) {
         for (const tile of this.clickableTiles()) {
-            if (tiles_to_highlight.has(tile.id)) {
-                tile.addHighlight(tiles_to_highlight.get(tile.id));
+            if (tilesToHighlight.has(tile.id)) {
+                tile.addHighlight(tilesToHighlight.get(tile.id));
             }
         }
     }
@@ -97,21 +56,15 @@ export default class NavArea {
         }
     }
 
-    refreshTilesToHighlight(tiles_to_highlight) {
-        this.tiles_to_highlight = tiles_to_highlight;
-        this.reload(true);
+    refreshTilesToHighlight(tilesToHighlight) {
+        this.tilesToHighlight = tilesToHighlight;
+        this.refresh();
     }
 
-    refresh() {
-        this.#beforeRefresh();
-        this.#reload();
-        this.#afterRefresh();
-    }
-
-    #reload() {
+    _reload() {
         this.#navElement = document.getElementById('navareatransition');
 
-        if (!this.#navElement || this.#navElement.style.display === "none") {
+        if (!this.#navElement || this.#navElement.style.display === 'none') {
             this.#navElement = document.getElementById('navarea');
         }
 
@@ -119,51 +72,49 @@ export default class NavArea {
         this.#width = this.#navElement.rows[0].childElementCount;
         this.#grid = [];
 
-        this.tiles_map = new Map();
+        this.tilesMap = new Map();
 
-        let scanned_x = 0;
-        let scanned_y = 0;
+        let scannedX = 0;
+        let scannedY = 0;
 
         for (const row of this.#navElement.rows) {
-            const row_arr = [];
+            const rowArray = [];
 
-            for (const tile_td of row.children) {
-
-                let tile_number;
+            for (const tileTd of row.children) {
+                let tileNumber;
 
                 /* There's probably no reason not to use the squad logic for normal ships, too */
                 if (this.#squad) {
-                    tile_number = (scanned_y * this.#width) + scanned_x;
+                    tileNumber = (scannedY * this.#width) + scannedX;
                 } else {
-                    tile_number = parseInt(tile_td.id.match(/[^\d]*(\d*)/)[1]);
+                    tileNumber = parseInt(tileTd.id.match(/[^\d]*(\d*)/)[1], 10);
                 }
 
-                const tile_x = tile_number % this.#width;
-                const tile_y = Math.floor(tile_number / this.#width);
+                const tileX = tileNumber % this.#width;
+                const tileY = Math.floor(tileNumber / this.#width);
+                const tile = new Tile(tileTd, tileX, tileY);
 
-                const tile = new Tile(tile_td, tile_x, tile_y);
+                rowArray.push(tile);
+                this.tilesMap.set(tile.id, tile);
 
-                row_arr.push(tile);
-                this.tiles_map.set(tile.id, tile);
-
-                scanned_x++;
+                scannedX++;
             }
 
-            this.#grid.push(row_arr);
-            scanned_y++;
-            scanned_x = 0;
+            this.#grid.push(rowArray);
+            scannedY++;
+            scannedX = 0;
         }
 
-        const centre_x = Math.floor(this.#width / 2);
-        const centre_y = Math.floor(this.#height / 2);
+        const centreX = Math.floor(this.#width / 2);
+        const centreY = Math.floor(this.#height / 2);
 
-        this.#centreTile = this.#grid[centre_y][centre_x];
-        this.#centreTile.is_centre_tile = true;
+        this.#centreTile = this.#grid[centreY][centreX];
+        this.#centreTile.isCentre = true;
 
         /* For squads or other situations where no userloc is available */
         if (!this.#centreTile.id || this.#centreTile.id === '-1') {
-            if (this.#grid[centre_y - 1][centre_x].id !== '-1') {
-                const newId = parseInt(this.#grid[centre_y - 1][centre_x].id) + 1;
+            if (this.#grid[centreY - 1][centreX].id !== '-1') {
+                const newId = parseInt(this.#grid[centreY - 1][centreX].id, 10) + 1;
                 this.#centreTile.id = newId;
             }
         }
@@ -177,88 +128,79 @@ export default class NavArea {
         return this.#grid[y][x];
     }
 
-    * yieldPathBetween(from, to, ignore_navigatable = false) {
-        let current_tile = from;
-        yield current_tile;
+    * yieldPathBetween(from, to, ignoreNavigatable = false) {
+        let currentTile = from;
+        yield currentTile;
 
-        while (current_tile.x != to.x || current_tile.y != to.y) {
-
-            let direction_x = 0;
-            let direction_y = 0;
+        while (currentTile.x !== to.x || currentTile.y !== to.y) {
+            let directionX = 0;
+            let directionY = 0;
 
             // Which way do we want to move?
-            if (current_tile.x > to.x) {
-                direction_x = -1;
-            } else if (current_tile.x < to.x) {
-                direction_x = 1;
+            if (currentTile.x > to.x) {
+                directionX = -1;
+            } else if (currentTile.x < to.x) {
+                directionX = 1;
             }
 
-            if (current_tile.y > to.y) {
-                direction_y = -1;
-            } else if (current_tile.y < to.y) {
-                direction_y = 1;
+            if (currentTile.y > to.y) {
+                directionY = -1;
+            } else if (currentTile.y < to.y) {
+                directionY = 1;
             }
 
-            if (direction_x == 0 && direction_y == 0) {
+            if (directionX === 0 && directionY === 0) {
                 // We should never end up here, as it implies the two co-ords have the same x and y
                 break;
             }
 
-            let candidate_tile = this.#grid[current_tile.y + direction_y][current_tile.x + direction_x];
+            let candidateTile = this.#grid[currentTile.y + directionY][currentTile.x + directionX];
 
             // Check to see if it's an unpassable tile, in which case the auto-pilot kicks in
-            if (!candidate_tile.isNavigatable()) {
-
-                if (candidate_tile.isVirtualTile()) {
+            if (!candidateTile.isNavigatable()) {
+                if (candidateTile.isVirtualTile()) {
                     break;
                 }
 
                 // If we're still going diagonally, the auto-pilot cannot do anything smart, so try to go in just one direction
-                if (direction_x != 0 && direction_y != 0) {
+                if (directionX !== 0 && directionY !== 0) {
+                    candidateTile = this.getTileOrVirtual(currentTile.x, currentTile.y + directionY, currentTile);
 
-                    candidate_tile = this.getTileOrVirtual(current_tile.x, current_tile.y + direction_y, current_tile);
+                    if (!candidateTile.isNavigatable()) {
+                        candidateTile = this.getTileOrVirtual(currentTile.x + directionX, currentTile.y, currentTile);
 
-                    if (!candidate_tile.isNavigatable()) {
-
-                        candidate_tile = this.getTileOrVirtual(current_tile.x + direction_x, current_tile.y, current_tile);
-
-                        if (!candidate_tile.isNavigatable()) {
+                        if (!candidateTile.isNavigatable()) {
                             break;
                         }
                     }
-                } else if (direction_x == 0) {
+                } else if (directionX === 0) {
                     // Vertical auto-pilot will attempt to navigate right, then left
+                    candidateTile = this.getTileOrVirtual(currentTile.x + 1, currentTile.y + directionY, currentTile);
 
-                    candidate_tile = this.getTileOrVirtual(current_tile.x + 1, current_tile.y + direction_y, current_tile);
+                    if (!candidateTile.isNavigatable() && !candidateTile.isVirtualTile()) {
+                        candidateTile = this.getTileOrVirtual(currentTile.x - 1, currentTile.y + directionY, currentTile);
 
-                    if (!candidate_tile.isNavigatable() && !candidate_tile.isVirtualTile()) {
-
-                        candidate_tile = this.getTileOrVirtual(current_tile.x - 1, current_tile.y + direction_y, current_tile);
-
-                        if (!candidate_tile.isNavigatable() && !candidate_tile.isVirtualTile()) {
+                        if (!candidateTile.isNavigatable() && !candidateTile.isVirtualTile()) {
                             break;
                         }
                     }
-                } else if (direction_y == 0) {
+                } else if (directionY === 0) {
                     // Horizontal auto-pilot will attempt to navigate down, then up
+                    candidateTile = this.getTileOrVirtual(currentTile.x + directionX, currentTile.y + 1, currentTile);
 
-                    candidate_tile = this.getTileOrVirtual(current_tile.x + direction_x, current_tile.y + 1, current_tile);
+                    if (!candidateTile.isNavigatable() && !candidateTile.isVirtualTile()) {
+                        candidateTile = this.getTileOrVirtual(currentTile.x + directionX, currentTile.y - 1, currentTile);
 
-                    if (!candidate_tile.isNavigatable() && !candidate_tile.isVirtualTile()) {
-
-                        candidate_tile = this.getTileOrVirtual(current_tile.x + direction_x, current_tile.y - 1, current_tile);
-
-                        if (!candidate_tile.isNavigatable() && !candidate_tile.isVirtualTile()) {
+                        if (!candidateTile.isNavigatable() && !candidateTile.isVirtualTile()) {
                             break;
                         }
                     }
                 }
             }
 
-            current_tile = candidate_tile;
-            yield current_tile;
+            currentTile = candidateTile;
+            yield currentTile;
         }
-
     }
 
     getPathBetween(from, to) {
@@ -277,14 +219,14 @@ export default class NavArea {
         yield* this.yieldPathBetween(this.#centreTile, tile);
     }
 
-    * yieldPathFrom(id, ignore_navigatable = false) {
-        const from_tile = this.getTile(id);
-        yield* this.yieldPathBetween(from_tile, this.#centreTile, ignore_navigatable);
+    * yieldPathFrom(id, ignoreNavigatable = false) {
+        const fromTile = this.getTile(id);
+        yield* this.yieldPathBetween(fromTile, this.#centreTile, ignoreNavigatable);
     }
 
     getTile(id) {
-        if (this.tiles_map.has(id)) {
-            return this.tiles_map.get(id);
+        if (this.tilesMap.has(id)) {
+            return this.tilesMap.get(id);
         }
 
         return null;
@@ -326,11 +268,11 @@ export default class NavArea {
 
     nav(id) {
         if (typeof navAjax === 'function') {
-            return navAjax(id);
+            return navAjax(id);  
         }
 
         if (typeof nav === 'function') {
-            return nav(id);
+            return nav(id);  
         }
 
         throw new Error('No function for nav or navAjax found!');
@@ -338,11 +280,11 @@ export default class NavArea {
 
     warp(id) {
         if (typeof warpAjax === 'function') {
-            return warpAjax(id);
+            return warpAjax(id);  
         }
 
         if (typeof warp === 'function') {
-            return warp(id);
+            return warp(id);  
         }
 
         throw new Error('No function for warp or warpAjax found!');
@@ -363,12 +305,13 @@ export default class NavArea {
             throw new Error(`Destination ${id} is not a valid X-hole!`);
         }
 
-        document.getElementById('xholebox').elements.warpx.value = id;
+        const xHoleBoxElement = document.getElementById('xholebox');
+        xHoleBoxElement.elements.warpx.value = id;
 
         if (typeof warpX === 'function') {
-            return warpX();
+            return warpX();  
         }
 
-        return document.getElementById("xholebox").submit();
+        return xHoleBoxElement.submit();
     }
 }

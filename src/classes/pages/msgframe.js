@@ -1,7 +1,7 @@
 import AbstractPage from '../abstract/abstract-page.js';
 import PardusLibrary from '../pardus-library.js';
 
-class Msgframe {
+export default class Msgframe extends AbstractPage {
     #centreTd;
 
     constructor() {
@@ -32,6 +32,9 @@ class Msgframe {
                 icon = 'gnome-error';
                 colour = '#FF3300';
                 break;
+            default:
+                icon = 'gnome-info';
+                colour = '#CCCCCC';
         }
 
         this.#setMessage(msg, icon, colour);
@@ -47,10 +50,15 @@ class Msgframe {
     }
 
     static sendMessage(msg, type) {
-        if (window.parent) {
-            return window.parent.window.dispatchEvent(new CustomEvent('pardus-message', {detail: {msg, type}}));
-        }
+        const messageDetail = {
+            detail: {
+                msg,
+                type,
+            },
+        };
+        const pardusMessageEvent = new CustomEvent('pardus-message', messageDetail);
 
-        return window.dispatchEvent(new CustomEvent('pardus-message', {detail: {msg, type}}));
+        const target = window.parent ? window.parent.window : window;
+        target.dispatchEvent(pardusMessageEvent);
     }
 }

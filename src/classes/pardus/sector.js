@@ -1,7 +1,6 @@
 import Tile from '../main/tile.js';
 
 export default class Sector {
-
     #idStart = 0;
     #columns = 0;
     #rows = 0;
@@ -27,13 +26,13 @@ export default class Sector {
         }
 
         return {
-            'sector': this.name,
-            'x': Math.floor((tileId - this.#idStart) / this.#rows),
-            'y': (tileId - this.#idStart) % this.#rows,
-            'tile_id': tileId,
-            'rows': this.#rows,
-            'colums': this.#columns
-        }
+            sector: this.name,
+            x: Math.floor((tileId - this.#idStart) / this.#rows),
+            y: (tileId - this.#idStart) % this.#rows,
+            tileId,
+            rows: this.#rows,
+            colums: this.#columns,
+        };
     }
 
     getVirtualTile(x, y, reference) {

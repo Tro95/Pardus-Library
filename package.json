@@ -1,22 +1,20 @@
 {
   "name": "pardus-library",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "The Pardus Library is a script designed to add useful and easy ways to interact with the online game Pardus (https://pardus.at) within other scripts.",
   "main": "src/index.js",
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.20.1",
+    "@stylistic/eslint-plugin": "^5.9.0",
+    "eslint": "^10.0.0",
+    "globals": "^16.1.0",
     "jsdoc": "^3.6.7",
-    "webpack": "^5.48.0",
-    "webpack-cli": "^4.7.2"
+    "jsdom": "^28.1.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node test/run.js",
     "lint": "eslint src",
     "lint-fix": "eslint src --fix",
-    "gen-docs": "./node_modules/.bin/jsdoc src --destination docs --recurse",
-    "build": "npx webpack-cli --config webpack.config.cjs"
+    "gen-docs": "./node_modules/.bin/jsdoc src --destination docs --recurse"
   },
   "repository": {
     "type": "git",

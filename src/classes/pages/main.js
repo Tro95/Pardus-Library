@@ -1,5 +1,6 @@
 import AbstractPage from '../abstract/abstract-page.js';
 import NavArea from '../main/nav.js';
+import OtherShips from '../main/other-ships.js';
 
 export default class Main extends AbstractPage {
     #navArea;
@@ -8,6 +9,10 @@ export default class Main extends AbstractPage {
         super('/main.php');
 
         this.#navArea = new NavArea();
+        this.otherShips = new OtherShips();
+        // this.otherShips.addAfterRefreshHook(() => {
+        //     console.log('Other ships refreshed!');
+        // });
 
         this.#handlePartialRefresh(() => {
             this.#navArea.refresh();
@@ -28,13 +33,13 @@ export default class Main extends AbstractPage {
         // Options for the observer (which mutations to observe)
         const config = {
             attributes: false,
-            childList: true, 
-            subtree: true
+            childList: true,
+            subtree: true,
         };
 
         // Callback function to execute when mutations are observed
         const callback = function(mutationsList, observer) {
-            func();
+            func(mutationsList, observer);
         };
 
         // Create an observer instance linked to the callback function
