@@ -1,6 +1,6 @@
 {
   "name": "pardus-library",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "The Pardus Library is a script designed to add useful and easy ways to interact with the online game Pardus (https://pardus.at) within other scripts.",
   "main": "src/index.js",
   "devDependencies": {
