@@ -7,6 +7,9 @@ export default class Tile {
     #virtualTile;
     #highlights = new Set();
     #listenerNonce = new Set();
+    #borders = new Set();
+    #glyphs = new Map();
+    #decorationLayer = null;
 
     static colours = new Map([
         ['Green', {
@@ -251,6 +254,176 @@ export default class Tile {
 
     clearHighlight() {
         this.#clearAllHighlighting();
+    }
+
+    // Borders and glyphs are an overlay layer rendered as a child of the <td>,
+    // independent of highlights. clearHighlight() must NOT remove borders/glyphs,
+    // and clearBorders()/clearGlyphs() must NOT remove highlights — keep these
+    // subsystems separate if refactoring.
+    addBorder(colour) {
+        if (this.isVirtualTile()) {
+            return false;
+        }
+
+        this.#borders.add(colour);
+        this.#refreshDecorationLayer();
+        return true;
+    }
+
+    removeBorder(colour) {
+        if (this.isVirtualTile()) {
+            return false;
+        }
+
+        const removed = this.#borders.delete(colour);
+        this.#refreshDecorationLayer();
+        return removed;
+    }
+
+    clearBorders() {
+        if (this.isVirtualTile()) {
+            return false;
+        }
+
+        this.#borders.clear();
+        this.#refreshDecorationLayer();
+        return true;
+    }
+
+    hasBorder(colour) {
+        return this.#borders.has(colour);
+    }
+
+    getBorders() {
+        return this.#borders.values();
+    }
+
+    addGlyph(symbol, position = 'tr') {
+        if (this.isVirtualTile()) {
+            return false;
+        }
+
+        this.#glyphs.set(symbol, position);
+        this.#refreshDecorationLayer();
+        return true;
+    }
+
+    removeGlyph(symbol) {
+        if (this.isVirtualTile()) {
+            return false;
+        }
+
+        const removed = this.#glyphs.delete(symbol);
+        this.#refreshDecorationLayer();
+        return removed;
+    }
+
+    clearGlyphs() {
+        if (this.isVirtualTile()) {
+            return false;
+        }
+
+        this.#glyphs.clear();
+        this.#refreshDecorationLayer();
+        return true;
+    }
+
+    hasGlyph(symbol) {
+        return this.#glyphs.has(symbol);
+    }
+
+    getGlyphs() {
+        return this.#glyphs.entries();
+    }
+
+    #resolveColour(input) {
+        for (const colour of this.constructor.colours.values()) {
+            if (colour.shortCode === input) {
+                return `rgb(${colour.red}, ${colour.green}, ${colour.blue})`;
+            }
+        }
+
+        return input;
+    }
+
+    #refreshDecorationLayer() {
+        if (this.#borders.size === 0 && this.#glyphs.size === 0) {
+            if (this.#decorationLayer) {
+                this.#decorationLayer.remove();
+                this.#decorationLayer = null;
+            }
+
+            return;
+        }
+
+        if (!this.#decorationLayer) {
+            if (this.element.style.position === '') {
+                this.element.style.position = 'relative';
+            }
+
+            this.#decorationLayer = document.createElement('div');
+            this.#decorationLayer.className = 'pardus-library-decoration';
+            this.#decorationLayer.style.position = 'absolute';
+            this.#decorationLayer.style.top = '0';
+            this.#decorationLayer.style.left = '0';
+            this.#decorationLayer.style.right = '0';
+            this.#decorationLayer.style.bottom = '0';
+            this.#decorationLayer.style.pointerEvents = 'none';
+            this.#decorationLayer.style.boxSizing = 'border-box';
+            this.element.appendChild(this.#decorationLayer);
+        }
+
+        if (this.#borders.size === 0) {
+            this.#decorationLayer.style.boxShadow = '';
+        } else {
+            const shadows = [];
+            let offset = 0;
+
+            for (const colour of this.#borders) {
+                shadows.push(`inset 0 0 0 ${offset + 2}px ${this.#resolveColour(colour)}`);
+                offset += 2;
+            }
+
+            this.#decorationLayer.style.boxShadow = shadows.join(', ');
+        }
+
+        // Re-render glyphs from scratch each time — small, simple, no leaks.
+        for (const child of Array.from(this.#decorationLayer.children)) {
+            child.remove();
+        }
+
+        for (const [symbol, position] of this.#glyphs) {
+            const glyphEl = document.createElement('span');
+            glyphEl.className = 'pardus-library-decoration__glyph';
+            glyphEl.textContent = symbol;
+            glyphEl.style.position = 'absolute';
+            glyphEl.style.lineHeight = '1';
+            glyphEl.style.fontSize = '12px';
+            glyphEl.style.color = '#ff0';
+            glyphEl.style.textShadow = '0 0 2px #000';
+
+            switch (position) {
+                case 'tl':
+                    glyphEl.style.top = '1px';
+                    glyphEl.style.left = '1px';
+                    break;
+                case 'bl':
+                    glyphEl.style.bottom = '1px';
+                    glyphEl.style.left = '1px';
+                    break;
+                case 'br':
+                    glyphEl.style.bottom = '1px';
+                    glyphEl.style.right = '1px';
+                    break;
+                case 'tr':
+                default:
+                    glyphEl.style.top = '1px';
+                    glyphEl.style.right = '1px';
+                    break;
+            }
+
+            this.#decorationLayer.appendChild(glyphEl);
+        }
     }
 
     #refreshHighlightStatus() {

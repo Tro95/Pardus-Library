@@ -50,6 +50,50 @@ export default class NavArea extends Refreshable {
         }
     }
 
+    addTilesBorder(tilesToBorder) {
+        for (const tile of this.clickableTiles()) {
+            if (tilesToBorder.has(tile.id)) {
+                tile.addBorder(tilesToBorder.get(tile.id));
+            }
+        }
+    }
+
+    removeTilesBorder(tileIds, colour) {
+        const idSet = tileIds instanceof Set ? tileIds : new Set(tileIds);
+
+        for (const tile of this.clickableTiles()) {
+            if (idSet.has(tile.id)) {
+                tile.removeBorder(colour);
+            }
+        }
+    }
+
+    addTilesGlyph(tilesToGlyph) {
+        for (const tile of this.clickableTiles()) {
+            if (!tilesToGlyph.has(tile.id)) {
+                continue;
+            }
+
+            const entry = tilesToGlyph.get(tile.id);
+
+            if (typeof entry === 'string') {
+                tile.addGlyph(entry);
+            } else {
+                tile.addGlyph(entry.symbol, entry.position);
+            }
+        }
+    }
+
+    removeTilesGlyph(tileIds, symbol) {
+        const idSet = tileIds instanceof Set ? tileIds : new Set(tileIds);
+
+        for (const tile of this.clickableTiles()) {
+            if (idSet.has(tile.id)) {
+                tile.removeGlyph(symbol);
+            }
+        }
+    }
+
     clearTilesHighlights() {
         for (const tile of this.clickableTiles()) {
             tile.clearHighlight();
