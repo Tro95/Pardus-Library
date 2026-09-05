@@ -14,7 +14,7 @@
     "test": "node test/run.js",
     "lint": "eslint src",
     "lint-fix": "eslint src --fix",
-    "gen-docs": "./node_modules/.bin/jsdoc src --destination docs --recurse"
+    "gen-docs": "jsdoc src --destination docs --recurse"
   },
   "repository": {
     "type": "git",
